@@ -58,7 +58,7 @@ function CircularBuffer:back() -- return the newest value.
 	return nil
 end
 
-function CircularBuffer:at(i)
+function CircularBuffer:at(i) -- -- return the values in order, starting at (i)
 	assert(i, "cant index buffer with nil")
 
 	local index = self:front_index() -- reuse front_index method.
