@@ -30,7 +30,6 @@ function CircularBuffer:maxSize()
 	return self.max_size
 end
 
-
 function CircularBuffer:front_index() -- return the index of oldest value.
 	local index = self.index + 1
 	
