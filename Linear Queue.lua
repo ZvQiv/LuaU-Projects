@@ -18,7 +18,7 @@ LinearQueue.__index = LinearQueue
 function LinearQueue.new()
 	local self = setmetatable({}, LinearQueue)
 
-	self.data = {} -- initalieze queue.
+	self.data = {} -- initalize queue.
 
 	-- luaU arrays start at index 1:
 	self.head = 1
