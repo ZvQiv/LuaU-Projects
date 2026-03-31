@@ -1,3 +1,4 @@
+-- This is parser & tokenizer for a small project of mine.
 local Commander = {}
 
 Commander.__index = Commander
