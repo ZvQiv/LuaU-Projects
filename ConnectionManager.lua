@@ -71,7 +71,7 @@ function connectionManager:get_connections()
     return self.connections
 end
 
-function connectionMannager:get_binds()
+function connectionManager:get_binds()
 	return self.binds
 end
 
