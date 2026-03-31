@@ -6,7 +6,6 @@ function LinearQueue.new()
 	local self = setmetatable({}, LinearQueue)
 
 	self.data = {}
-
 	self.head = 1
 	self.tail = 1
 
