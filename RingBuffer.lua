@@ -1,106 +1,170 @@
-local CircularBuffer = {} -- CircularBuffer Class.
+local CircularBuffer = {}
 
 CircularBuffer.__index = CircularBuffer
 
 function CircularBuffer.new(size)
-	assert(size, "Size expected got. nil.")
-	assert(size > 0, "size must be > 0")
+	assert(size, "Cannot initialize CircularBuffer with nil")
+	assert(size > 0, "Cannot initialize CircularBuffer to size < 1")
+
+	local self = {}
 	
-	local self = setmetatable({}, CircularBuffer)
-	
-	-- initalize fields:
-	self.data = {}
-	self.index = 0
-	self.max_size = size
+	setmetatable(self, CircularBuffer)
+
+	self._data = {}
+	self._backIndex = 0
+	self._maxSize = size
 
 	return self
 end
 
--- not explaining these, should not need to explain them:
 function CircularBuffer:reset()
-	self.data = {}
-	self.index = 0
+	self._data = {}
+	self._backIndex = 0
 end
 
-function CircularBuffer:get_size()
-	return #self.data
+function CircularBuffer:getSize()
+	return #self._data
 end
 
-function CircularBuffer:maxSize()
-	return self.max_size
+function CircularBuffer:getMaxSize()
+	return self._maxSize
 end
 
-function CircularBuffer:front_index() -- return the index of oldest value.
-	local index = self.index + 1
+function CircularBuffer:setSize(newSize)
+	assert(newSize, "Cannot set CircularBuffer with nil")
+	assert(newSize > 0, "Cannot set CircularBuffer to size < 1")
 	
-	if not self.data[index] then
+	if newSize == self._maxSize then
+		return
+	end
+
+	local it = self:iterator()
+	local msg = it:next()
+	local sorted = {}
+	local ind = 0
+	
+	while msg and ind < newSize do
+		local nextInd = ind + 1
+
+		sorted[nextInd] = {
+			entry = msg
+		}
+
+		if sorted[ind] then
+			sorted[ind]._next = sorted[nextInd]
+		end
+
+		ind = nextInd
+		msg = it:next()
+	end
+
+	self._data = sorted
+	self._backIndex = ind
+	self._maxSize = newSize
+end
+
+function CircularBuffer:getFrontIndex()
+	local front = self._backIndex + 1
+
+	if not self._data[front] then
 		return 1
 	end
-	
-	return index
+
+	return front
 end
 
-function CircularBuffer:front() -- return the oldest value.
-	local front = self:front_index() -- reuse front_index method here.
-	
-	if self.data[front] then
-		return self.data[front]
+function CircularBuffer:front()
+	local front = self:getFrontIndex()
+
+	if self._data[front] then
+		return self._data[front].entry
 	end
-	
+
 	return nil
 end
 
-function CircularBuffer:back() -- return the newest value.
-	if self.data[self.index] then
-		return self.data[self.index]
+function CircularBuffer:back()
+	if self._data[self._backIndex] then
+		return self._data[self._backIndex].entry
 	end
-	
+
 	return nil
 end
 
-function CircularBuffer:at(i) -- -- return the values in order, starting at (i)
-	assert(i, "cant index buffer with nil")
+function CircularBuffer:iterator()
+	local front =  self._data[self:getFrontIndex()]
 
-	local index = self:front_index() -- reuse front_index method.
-	index = (index + i - 2) % self.max_size + 1 -- wrap gaurd.
+	local iterator = {
+		data = front,
+		next = function (self)
+			local retVal = self.data
+			
+			if retVal then
+				self.data = self.data._next
+			end
+			
+			return retVal and retVal.entry
+		end
+	}
+
+	return iterator
+end
+
+function CircularBuffer:getData()
+	return self._data
+end
+
+function CircularBuffer:at(ind)
+	assert(ind, "Cannot index CircularBuffer with nil")
+
+	local index = self:getFrontIndex()
 	
-	if self.data[index] then
-		return self.data[index]
+	index = (index + ind - 2) % self._maxSize + 1
+
+	if self._data[index] then
+		return self._data[index].entry
 	end
-	
+
 	return nil
 end
 
-function CircularBuffer:reverse_at(i) -- return the values in reverse order, starting at (i).
-	local index = self.index
+function CircularBuffer:reverseAt(ind)
+	local index = self._backIndex
 	
-	index = (index - i - 1) % self.max_size + 1 -- wrap gaurd.
-	
-	if self.data[index] then
-		return self.data[index]
+	index = (index - ind) % self._maxSize + 1
+
+	if self._data[index] then
+		return self._data[index].entry
 	end
-	
+
 	return nil
 end
 
-function CircularBuffer:get_data() -- return the queue.
-	return self.data
-end
+function CircularBuffer:push_back(newData)
+	local currBackIndex = self._backIndex
+	local newBackIndex = self._backIndex + 1
 
-function CircularBuffer:enqueue(newData) -- enqueue.
-	local next_index = self.index + 1 -- increment next_index.
-	
-	if next_index > self.max_size then -- assuming next_index > max_size overwrite next_index.
-		next_index = 1
+	if newBackIndex > self._maxSize then
+		newBackIndex = 1
 	end
+
+	local overwrittenData = self._data[newBackIndex]
 	
-	-- capture overwritten values to return!
-	local overwritten = self.data[next_index]
+	self._data[newBackIndex] = {
+		entry = newData
+	}
 
-	self.data[next_index] = newData
-	self.index = next_index
+	if currBackIndex > 0 then
+		self._data[currBackIndex]._next = self._data[newBackIndex]
 
-	return overwritten
+		if overwrittenData then
+			overwrittenData._next = nil
+		end
+	end
+
+	self._backIndex = newBackIndex
+
+	return overwrittenData and overwrittenData.entry
 end
 
 return CircularBuffer
