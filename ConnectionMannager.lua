@@ -1,17 +1,17 @@
-local connectionMannager = {}
+local connectionManager = {}
 
-connectionMannager.__index = connectionMannager
+connectionManager.__index = connectionManager
 
-function connectionMannager.new()
+function connectionManager.new()
 	local _reg = setmetatable({
 		connections = {},
 		binds = {}
-	}, connectionMannager)
+	}, connectionManager)
 	
 	return _reg
 end
 
-function connectionMannager:add(v)
+function connectionManager:add(v)
 	assert(typeof(v) == "RBXScriptConnection", "arg must be a connection.")
 
 	table.insert(self.connections, v)
@@ -31,7 +31,7 @@ function connectionMannager:add(v)
 	}
 end
 
-function connectionMannager:cleanup()
+function connectionManager:cleanup()
 	local to_clean = { 
 		self.connections, 
 		self.binds
@@ -54,7 +54,7 @@ function connectionMannager:cleanup()
 	return nil
 end
 
-function connectionMannager:bind_to(instance)
+function connectionManager:bind_to(instance)
 	assert(typeof(instance) == "Instance", "arg must be an instance.")
 
 	local conn
@@ -67,7 +67,7 @@ function connectionMannager:bind_to(instance)
 	return nil
 end
 
-function connectionMannager:get_connections()
+function connectionManager:get_connections()
     return self.connections
 end
 
