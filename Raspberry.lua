@@ -264,7 +264,7 @@ end
 
 function _Raspberry.new(maxSize)
 	local self = setmetatable({}, _Raspberry)
-	local buffer_class, parser_class, janitor_class = require(script.RingBuffer), require(script.Parser), require(script.Janitor)
+	local buffer_class, parser_class, janitor_class = Buffer, Parser, Janitor
 	
 	self.buffer, self.parser, self.janitor = buffer_class.new(maxSize or 100), parser_class.new(), janitor_class.new()
 	self.pool = {} 
