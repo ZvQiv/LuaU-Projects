@@ -1,4 +1,4 @@
-local Parser = loadstring(game:HttpGet('https://raw.githubusercontent.com/ZvQiv/LuaU-Projects/refs/heads/main/Raspberry.lua'))()
+local Parser = loadstring(game:HttpGet('https://raw.githubusercontent.com/ZvQiv/LuaU-Projects/refs/heads/main/Parser.lua'))()
 local Buffer = loadstring(game:HttpGet('https://raw.githubusercontent.com/ZvQiv/LuaU-Projects/refs/heads/main/Raspberry.lua'))()
 local Janitor = loadstring(game:HttpGet('https://raw.githubusercontent.com/ZvQiv/LuaU-Projects/refs/heads/main/Raspberry.lua'))()
 
