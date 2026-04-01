@@ -1,3 +1,7 @@
+local Parser = loadstring(game:HttpGet('https://raw.githubusercontent.com/ZvQiv/LuaU-Projects/refs/heads/main/Raspberry.lua'))()
+local Buffer = loadstring(game:HttpGet('https://raw.githubusercontent.com/ZvQiv/LuaU-Projects/refs/heads/main/Raspberry.lua'))()
+local Janitor = loadstring(game:HttpGet('https://raw.githubusercontent.com/ZvQiv/LuaU-Projects/refs/heads/main/Raspberry.lua'))()
+
 local TextService = game:GetService("TextService")
 local RunService = game:GetService("RunService")
 
@@ -260,7 +264,7 @@ end
 
 function _Raspberry.new(maxSize)
 	local self = setmetatable({}, _Raspberry)
-	local buffer_class, parser_class, janitor_class = require(script.Parent.RingBuffer), require(script.Parent.Parser), require(script.Parent.Janitor)
+	local buffer_class, parser_class, janitor_class = require(script.RingBuffer), require(script.Parser), require(script.Janitor)
 	
 	self.buffer, self.parser, self.janitor = buffer_class.new(maxSize or 100), parser_class.new(), janitor_class.new()
 	self.pool = {} 
