@@ -264,9 +264,8 @@ end
 
 function _Raspberry.new(maxSize)
 	local self = setmetatable({}, _Raspberry)
-	local buffer_class, parser_class, janitor_class = Buffer, Parser, Janitor
-	
-	self.buffer, self.parser, self.janitor = buffer_class.new(maxSize or 100), parser_class.new(), janitor_class.new()
+
+	self.buffer, self.parser, self.janitor = Buffer.new(maxSize or 100), Parser.new(), Janitor.new()
 	self.pool = {} 
 	self.auto_scroll = true
 	self.render = false
